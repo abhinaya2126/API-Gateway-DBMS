@@ -1,0 +1,141 @@
+const pool = require("../config/db");
+
+const getVersionsByApi = async (req, res, next) => {
+    try {
+        const { apiId } = req.params;
+
+        const [versions] = await pool.execute(`
+            SELECT
+                version_id,
+                api_id,
+                version_number,
+                is_active,
+                released_at,
+                deprecated_at
+            FROM api_versions
+            WHERE api_id = ?
+            ORDER BY version_id
+        `, [apiId]);
+
+        res.json({
+            success: true,
+            count: versions.length,
+            versions
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const createVersion = async (req, res, next) => {
+    try {
+        const { apiId } = req.params;
+        const {
+            version_number,
+            is_active
+        } = req.body;
+
+        if (!version_number) {
+            return res.status(400).json({
+                success: false,
+                message: "version_number is required"
+            });
+        }
+
+        const [result] = await pool.execute(`
+            INSERT INTO api_versions
+                (api_id, version_number, is_active)
+            VALUES (?, ?, ?)
+        `, [
+            apiId,
+            version_number,
+            is_active ?? 1
+        ]);
+
+        res.status(201).json({
+            success: true,
+            message: "API version created successfully",
+            version_id: result.insertId
+        });
+    } catch (error) {
+        if (error.code === "ER_DUP_ENTRY") {
+            return res.status(409).json({
+                success: false,
+                message: "This API version already exists"
+            });
+        }
+
+        next(error);
+    }
+};
+
+const updateVersion = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const {
+            version_number,
+            is_active,
+            deprecated_at
+        } = req.body;
+
+        const [result] = await pool.execute(`
+            UPDATE api_versions
+            SET
+                version_number = COALESCE(?, version_number),
+                is_active = COALESCE(?, is_active),
+                deprecated_at = COALESCE(?, deprecated_at)
+            WHERE version_id = ?
+        `, [
+            version_number ?? null,
+            is_active ?? null,
+            deprecated_at ?? null,
+            id
+        ]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "API version not found"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "API version updated successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const deleteVersion = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const [result] = await pool.execute(
+            "DELETE FROM api_versions WHERE version_id = ?",
+            [id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "API version not found"
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "API version deleted successfully"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = {
+    getVersionsByApi,
+    createVersion,
+    updateVersion,
+    deleteVersion
+};
