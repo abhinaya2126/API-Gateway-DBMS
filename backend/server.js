@@ -16,6 +16,8 @@ const permissionRoutes = require("./routes/permissionRoutes");
 const apiKeyRoutes = require("./routes/apiKeyRoutes");
 const usageRoutes = require("./routes/usageRoutes");
 const auditRoutes = require("./routes/auditRoutes");
+const gatewayRoutes = require("./routes/gatewayRoutes");
+const requestIdMiddleware = require("./middleware/requestIdMiddleware");
 
 const app = express();
 
@@ -31,6 +33,14 @@ app.use("/api/permissions", permissionRoutes);
 app.use("/api/keys", apiKeyRoutes);
 app.use("/api/usage", usageRoutes);
 app.use("/api/audit", auditRoutes);
+
+
+app.use(
+    "/api/gateway",
+    requestIdMiddleware,
+    gatewayRoutes
+);
+
 
 app.get("/api/health", async (req, res, next) => {
     try {
