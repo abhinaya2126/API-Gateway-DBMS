@@ -5,56 +5,64 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "47046840"
   },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "api_key",
+      "value": "agw_live_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
+    },
+    {
+      "key": "api_key_id",
+      "value": "5"
+    }
+  ],
   "item": [
     {
       "name": "01 Authentication",
       "item": [
         {
           "name": "Login",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const response = pm.response.json();\r",
-                  "\r",
-                  "if (response.success && response.token) {\r",
-                  "    pm.collectionVariables.set(\"token\", response.token);\r",
-                  "    console.log(\"JWT token saved successfully\");\r",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"email\": \"arjun.admin@apigw.local\",\r\n  \"password\": \"Admin@123\"\r\n}",
+              "raw": "{\n  \"email\": \"arjun.admin@apigw.local\",\n  \"password\": \"Admin@123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/auth/login",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
             }
           },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.success && response.token) {",
+                  "  pm.collectionVariables.set('token', response.token);",
+                  "  console.log('JWT token saved successfully');",
+                  "}"
+                ]
+              }
+            }
+          ],
           "response": []
         }
       ]
@@ -65,150 +73,120 @@
         {
           "name": "Get All Users",
           "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/users",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{auth_secret_0zur}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:5000/api/users",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "users"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Get User By ID",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
+            "header": [],
+            "url": "{{base_url}}/api/users/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Create User",
           "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/users",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0zur}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "POST",
-            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"username\": \"test_user\",\r\n  \"email\": \"testuser@apigw.local\",\r\n  \"password\": \"Test@123\",\r\n  \"role_id\": 2\r\n}",
+              "raw": "{\n  \"username\": \"test_user\",\n  \"email\": \"testuser@apigw.local\",\n  \"password\": \"Test@123\",\n  \"role_id\": 2\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/users",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "users"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Update User",
           "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/users/5",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0zur}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "PUT",
-            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"username\": \"test_user_updated\",\r\n  \"email\": \"testuser_updated@apigw.local\",\r\n  \"role_id\": 2,\r\n  \"is_active\": true\r\n}",
+              "raw": "{\n  \"username\": \"test_user_updated\",\n  \"email\": \"testuser_updated@apigw.local\",\n  \"role_id\": 2,\n  \"is_active\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/users/5",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "users",
-                "5"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Delete User",
           "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/users/5",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_0zur}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:5000/api/users/5",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "users",
-                "5"
-              ]
             }
-          },
-          "response": []
+          }
         }
       ]
     },
@@ -219,104 +197,119 @@
           "name": "Get All APIs",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
+            "header": [],
+            "url": "{{base_url}}/api/apis",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Get API By ID",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
+            "header": [],
+            "url": "{{base_url}}/api/apis/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Create API",
           "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/apis",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{auth_secret_0zur}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "POST",
-            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"api_name\": \"Test API\",\r\n  \"description\": \"API created during Postman testing\",\r\n  \"owner_id\": 1\r\n}",
+              "raw": "{\n  \"api_name\": \"Test API\",\n  \"description\": \"API created during Postman testing\",\n  \"owner_id\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/apis",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "apis"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Update API",
           "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/apis/5",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{auth_secret_0zur}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "PUT",
-            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"api_name\": \"Test API Updated\",\r\n  \"description\": \"Updated during Postman testing\",\r\n  \"owner_id\": 1,\r\n  \"is_active\": true\r\n}",
+              "raw": "{\n  \"api_name\": \"Test API Updated\",\n  \"description\": \"Updated during Postman testing\",\n  \"owner_id\": 1,\n  \"is_active\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/apis/5",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "apis",
-                "5"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Delete API",
           "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": []
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/apis/5",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         }
       ]
     },
@@ -327,98 +320,101 @@
           "name": "Get Versions By API",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
+            "header": [],
+            "url": "{{base_url}}/api/versions/api/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Create Version",
           "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/versions/api/1",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{supabase_service_role_api_key_0zur}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "POST",
-            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"version_number\": \"v3\",\r\n  \"is_active\": true\r\n}",
+              "raw": "{\n  \"version_number\": \"v3\",\n  \"is_active\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/versions/api/1",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "versions",
-                "api",
-                "1"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Update Version",
           "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/versions/9",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{supabase_service_role_api_key_15u4}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "PUT",
-            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"version_number\": \"v3.1\",\r\n  \"is_active\": true\r\n}",
+              "raw": "{\n  \"version_number\": \"v3.1\",\n  \"is_active\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/versions/9",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "versions",
-                "9"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Delete Version",
           "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": []
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/versions/9",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         }
       ]
     },
@@ -427,127 +423,103 @@
       "item": [
         {
           "name": "Get Routes By Version",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/routes/version/2",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{auth_secret_15u4}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
-            },
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"path\": \"/test-route\",\r\n  \"http_method\": \"GET\",\r\n  \"description\": \"Test route created during Postman testing\",\r\n  \"is_active\": true\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/routes/version/2",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "routes",
-                "version",
-                "2"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Create Route",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{auth_secret_15u4}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:5000/api/routes/version/2",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "routes",
-                "version",
-                "2"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Route",
-          "request": {
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/routes/version/2",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{auth_secret_15u4}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "PUT",
-            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"path\": \"/test-route-updated\",\r\n  \"http_method\": \"POST\",\r\n  \"description\": \"Updated during Postman testing\",\r\n  \"is_active\": true\r\n}",
+              "raw": "{\n  \"path\": \"/test-route\",\n  \"http_method\": \"GET\",\n  \"description\": \"Test route created during Postman testing\",\n  \"is_active\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/routes/11",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "routes",
-                "11"
-              ]
             }
-          },
-          "response": []
+          }
+        },
+        {
+          "name": "Update Route",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/routes/11",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"path\": \"/test-route-updated\",\n  \"http_method\": \"POST\",\n  \"description\": \"Updated during Postman testing\",\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
         },
         {
           "name": "Delete Route",
           "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": []
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/routes/11",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         }
       ]
     },
@@ -557,114 +529,88 @@
         {
           "name": "Get All Permissions",
           "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/permissions",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{supabase_service_role_api_key_15u4}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:5000/api/permissions",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "permissions"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Get User Permissions",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
-        },
-        {
-          "name": "Grant Permission",
-          "request": {
+            "header": [],
+            "url": "{{base_url}}/api/permissions/user/2",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{supabase_service_role_api_key_15u4}}",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Grant Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/permissions/user/2",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "POST",
-            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"permission_id\": 7\r\n}",
+              "raw": "{\n  \"permission_id\": 7\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/permissions/user/2",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "permissions",
-                "user",
-                "2"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Revoke Permission",
           "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/api/permissions/user/2/7",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{supabase_service_role_api_key_15u4}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:5000/api/permissions/user/2/7",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "permissions",
-                "user",
-                "2",
-                "7"
-              ]
             }
-          },
-          "response": []
+          }
         }
       ]
     },
@@ -675,88 +621,87 @@
           "name": "Get All API Keys",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
+            "header": [],
+            "url": "{{base_url}}/api/keys",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Get User API Keys",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
-        },
-        {
-          "name": "Create API Key",
-          "request": {
+            "header": [],
+            "url": "{{base_url}}/api/keys/user/2",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{json_web_token_15u4}}",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/keys",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
             },
-            "method": "POST",
-            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"user_id\": 2,\r\n  \"key_name\": \"postman-test-key\"\r\n}",
+              "raw": "{\n  \"user_id\": 2,\n  \"key_name\": \"postman-test-key\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:5000/api/keys",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "keys"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Revoke API Key",
           "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{base_url}}/api/keys/{{api_key_id}}/revoke",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{supabase_service_role_api_key_15u4}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
-            },
-            "method": "PUT",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:5000/api/keys/ACTUAL_KEY_ID/revoke",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "keys",
-                "ACTUAL_KEY_ID",
-                "revoke"
-              ]
             }
-          },
-          "response": []
+          }
         }
       ]
     },
@@ -766,49 +711,56 @@
         {
           "name": "Simulate API Request",
           "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{base_url}}/api/usage/simulate",
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "{{supabase_service_role_api_key_15u4}}",
+                  "value": "{{token}}",
                   "type": "string"
                 }
               ]
-            },
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:5000/api/usage/simulate",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "5000",
-              "path": [
-                "api",
-                "usage",
-                "simulate"
-              ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Get All Usage Logs",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
+            "header": [],
+            "url": "{{base_url}}/api/usage",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Get My Usage Logs",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
+            "header": [],
+            "url": "{{base_url}}/api/usage/me",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         }
       ]
     },
@@ -819,57 +771,382 @@
           "name": "Get All Audit Logs",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
+            "header": [],
+            "url": "{{base_url}}/api/audit-logs",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         },
         {
           "name": "Get User Audit Logs",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
+            "header": [],
+            "url": "{{base_url}}/api/audit-logs/user/2",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
         }
       ]
-    }
-  ],
-  "variable": [
-    {
-      "key": "supabase_service_role_api_key_191q",
-      "secret": true
     },
     {
-      "key": "json_web_token_191q",
-      "secret": true
+      "name": "10 Gateway",
+      "item": [
+        {
+          "name": "Test Gateway",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/gateway/hello"
+          }
+        },
+        {
+          "name": "Forward Get Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users"
+          }
+        },
+        {
+          "name": "Dynamic Route Lookup - Get Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users"
+          }
+        },
+        {
+          "name": "Dynamic Route Parameter - Get User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users/1"
+          }
+        },
+        {
+          "name": "Create User - Gateway",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"David Wilson\",\n  \"email\": \"david@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Gateway - 502 Service Unavailable",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Failure Test\",\n  \"email\": \"failure@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Gateway - 504 Gateway Timeout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Timeout Test\",\n  \"email\": \"timeout@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Gateway - API Key Required",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users"
+          }
+        },
+        {
+          "name": "GET Gateway - Valid API Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users"
+          }
+        },
+        {
+          "name": "GET Dynamic Route Parameter - Get User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users/1"
+          }
+        },
+        {
+          "name": "POST Dynamic Service - Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Final Test User\",\n  \"email\": \"finaltest@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET Gateway - Invalid API Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "invalid_test_key",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users"
+          }
+        },
+        {
+          "name": "PUT Revoke API Key",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{base_url}}/api/keys/{{api_key_id}}/revoke",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET Gateway - Route Not Found",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/nonexistent"
+          }
+        },
+        {
+          "name": "GET Gateway - User Not Found",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users/999999"
+          }
+        },
+        {
+          "name": "GET List API Keys",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/keys",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET User API Keys",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/keys/user/2",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST Create API Key",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/keys",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 2,\n  \"key_name\": \"postman-test-key\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET Gateway - New API Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{base_url}}/api/gateway/apis/1/v2/users"
+          }
+        }
+      ]
     },
     {
-      "key": "token",
-      "value": ""
-    },
-    {
-      "key": "auth_secret_0zur",
-      "secret": true
-    },
-    {
-      "key": "json_web_token_0zur",
-      "secret": true
-    },
-    {
-      "key": "supabase_service_role_api_key_0zur",
-      "secret": true
-    },
-    {
-      "key": "supabase_service_role_api_key_15u4",
-      "secret": true
-    },
-    {
-      "key": "auth_secret_15u4",
-      "secret": true
-    },
-    {
-      "key": "json_web_token_15u4",
-      "secret": true
+      "name": "11 Demo Services",
+      "item": [
+        {
+          "name": "Get All Users (Direct)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/demo/users"
+          }
+        },
+        {
+          "name": "Create User (Direct)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/demo/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"demo@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }
