@@ -61,18 +61,18 @@ async function main() {
     const login = await fetch(`${base}/api/auth/login`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email: "arjun.admin@apigw.local", password: "Admin@123" })
+        body: JSON.stringify({ email: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD })
     });
     const adminToken = (await login.json()).token;
     const devLogin = await fetch(`${base}/api/auth/login`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email: "priya.dev@apigw.local", password: "Dev@123" })
+        body: JSON.stringify({ email: process.env.TEST_DEVELOPER_EMAIL, password: process.env.TEST_DEVELOPER_PASSWORD })
     });
     const devToken = (await devLogin.json()).token;
     const adminHeaders = { authorization: `Bearer ${adminToken}` };
-    const adminKey = "agw_live_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4";
-    const devKey = "agw_live_11aa22bb33cc44dd55ee66ff77aa88bb";
+    const adminKey = process.env.ADMIN_API_KEY;
+    const devKey = process.env.TEST_DEVELOPER_API_KEY;
 
     await call("user GET", "GET", "/api/gateway/apis/1/v2/users", { "x-api-key": adminKey });
     await call("user POST", "POST", "/api/gateway/apis/1/v2/users", { "x-api-key": adminKey }, { name: "QA User", email: "qa@example.com" });
@@ -96,7 +96,7 @@ async function main() {
     await call("revoke temporary key", "PUT", `/api/keys/${temporaryKeyId}/revoke`, adminHeaders);
     await call("revoked key", "GET", "/api/gateway/apis/1/v2/users", { "x-api-key": temporaryKey });
     await db.execute("UPDATE api_keys SET is_active = 1, expires_at = DATE_SUB(NOW(), INTERVAL 1 DAY) WHERE key_id = 4");
-    await call("active expired key", "GET", "/api/gateway/apis/1/v2/users", { "x-api-key": "agw_live_00aa11bb22cc44dd55ff66gg77hh" });
+    await call("active expired key", "GET", "/api/gateway/apis/1/v2/users", { "x-api-key": process.env.EXPIRED_API_KEY });
     await db.execute("UPDATE api_keys SET is_active = 0, expires_at = '2025-01-01 00:00:00' WHERE key_id = 4");
 
     await db.execute("UPDATE apis SET is_active = 0 WHERE api_id = 4");

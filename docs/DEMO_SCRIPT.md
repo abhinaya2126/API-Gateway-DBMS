@@ -2,8 +2,8 @@
 
 1. Run the database scripts in order, then `npm install` in backend, frontend, and each service folder.
 2. Start everything with `npm run start:all` and start Vite with `npm run dev --prefix frontend`.
-3. Open the developer portal at `http://localhost:5173` and sign in at `http://localhost:5173/login` as DEVELOPER (`priya.dev@apigw.local` / `Dev@123`) to show the developer dashboard and owned APIs.
-4. Open the admin panel at `http://localhost:5173/admin` and sign in at `http://localhost:5173/admin/login` as ADMIN (`arjun.admin@apigw.local` / `Admin@123`) to show the dashboard, API registry, masked keys, audit, and analytics.
+3. Open the developer portal at `http://localhost:5173/login` and create a temporary developer account, or use credentials created by the administrator.
+4. Open the admin panel at `http://localhost:5173/admin/login` and use the environment-driven admin credentials from `backend/.env` or `backend/.admin-credentials.txt`.
 5. Open Gateway Tester, select User API `v1 /users`, enter the admin key from the seed, and send a request.
 6. Show the response status, request ID, rate-limit headers, response time, and JSON gateway metadata.
 7. Log in as DEVELOPER and show permitted Product or Order access. Attempt to access a protected admin route to confirm the role guard denies access.

@@ -20,19 +20,28 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 const gatewayRoutes = require("./routes/gatewayRoutes");
 const requestIdMiddleware = require("./middleware/requestIdMiddleware");
 
-if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET must be configured before starting the backend");
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+    throw new Error("JWT_SECRET must be configured with at least 32 characters before starting the backend");
 }
 
 const app = express();
 
-const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173")
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173,http://127.0.0.1:5173")
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
 
 app.use(cors({
-    origin: allowedOrigins
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error("Origin is not allowed by CORS"));
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-api-key", "X-Request-ID"],
+    optionsSuccessStatus: 204
 }));
 app.use(express.json());
 app.use("/api/auth", authRoutes);

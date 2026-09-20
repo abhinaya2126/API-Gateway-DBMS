@@ -43,12 +43,12 @@ async function dbQuery(connection, sql, values = []) {
 }
 
 async function main() {
-    await login("ADMIN", "arjun.admin@apigw.local", "Admin@123");
-    await login("DEVELOPER", "priya.dev@apigw.local", "Dev@123");
-    await login("USER", "user.demo@apigw.local", "User@123");
-    await login("wrong password", "arjun.admin@apigw.local", "wrong");
+    await login("ADMIN", process.env.ADMIN_EMAIL, process.env.ADMIN_PASSWORD);
+    await login("DEVELOPER", process.env.TEST_DEVELOPER_EMAIL, process.env.TEST_DEVELOPER_PASSWORD);
+    await login("USER", process.env.TEST_USER_EMAIL, process.env.TEST_USER_PASSWORD);
+    await login("wrong password", process.env.ADMIN_EMAIL, "wrong");
     await request("missing login fields", "POST", "/api/auth/login", { body: { email: "" } });
-    await login("inactive user", "meera.dev@apigw.local", "Dev@789");
+    await login("inactive user", process.env.TEST_INACTIVE_EMAIL, process.env.TEST_INACTIVE_PASSWORD);
     await login("nonexistent user", "nobody@apigw.local", "Nope@123");
 
     await request("protected no token", "GET", "/api/users");
@@ -58,10 +58,10 @@ async function main() {
 
     await request("users list", "GET", "/api/users", { headers: auth(tokens.ADMIN) });
     await request("user by id", "GET", "/api/users/1", { headers: auth(tokens.ADMIN) });
-    const newUser = await request("user create", "POST", "/api/users", { headers: auth(tokens.ADMIN), body: { username: "qa_user", email: "qa_user@apigw.local", password: "Qa@12345", role_id: 3 } });
+    const newUser = await request("user create", "POST", "/api/users", { headers: auth(tokens.ADMIN), body: { username: `qa_user_${Date.now()}`, email: `qa_${Date.now()}@example.test`, password: "QaStrong@12345", role_id: 3 } });
     const userId = newUser.body?.user_id;
     if (userId) created.users.push(userId);
-    await request("duplicate user email", "POST", "/api/users", { headers: auth(tokens.ADMIN), body: { username: "qa_user_2", email: "qa_user@apigw.local", password: "Qa@12345", role_id: 3 } });
+    await request("duplicate user email", "POST", "/api/users", { headers: auth(tokens.ADMIN), body: { username: "qa_user_duplicate", email: process.env.TEST_DUPLICATE_EMAIL, password: "QaStrong@12345", role_id: 3 } });
     await request("invalid user input", "POST", "/api/users", { headers: auth(tokens.ADMIN), body: { username: "x", email: "bad", password: "x", role_id: 3 } });
     if (userId) {
         await request("user update", "PUT", `/api/users/${userId}`, { headers: auth(tokens.ADMIN), body: { username: "qa_user_updated", email: "qa_user_updated@apigw.local", role_id: 3, is_active: true } });
@@ -153,11 +153,11 @@ async function main() {
         ["gateway payment POST", 4, "v2", "/payments", "POST"]
     ];
     for (const [name, apiId, version, route, method] of gatewayCases) {
-        await request(name, method, `/api/gateway/apis/${apiId}/${version}${route}`, { headers: keyHeader("agw_live_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"), body: method === "POST" ? {} : undefined });
+        await request(name, method, `/api/gateway/apis/${apiId}/${version}${route}`, { headers: keyHeader(process.env.ADMIN_API_KEY), body: method === "POST" ? {} : undefined });
     }
     await request("gateway no key", "GET", "/api/gateway/apis/1/v2/users");
     await request("gateway invalid key", "GET", "/api/gateway/apis/1/v2/users", { headers: keyHeader("invalid") });
-    await request("gateway route missing", "GET", "/api/gateway/apis/1/v2/missing", { headers: keyHeader("agw_live_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4") });
+    await request("gateway route missing", "GET", "/api/gateway/apis/1/v2/missing", { headers: keyHeader(process.env.ADMIN_API_KEY) });
     await request("gateway new key", "GET", "/api/gateway/apis/1/v2/users", { headers: fullKey ? keyHeader(fullKey) : {} });
 
     const directChecks = [];

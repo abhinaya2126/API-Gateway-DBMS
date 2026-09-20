@@ -6,6 +6,7 @@ import AdminLayout from "./components/AdminLayout";
 import { AuthProvider } from "./context/AuthProvider";
 
 import DeveloperLogin from "./pages/developer/DeveloperLogin";
+import Register from "./pages/developer/Register";
 import AdminLogin from "./pages/admin/AdminLogin";
 import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
@@ -23,6 +24,7 @@ function DeveloperRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<DeveloperLogin />} />
+      <Route path="/register" element={<Register />} />
       <Route
         path="/"
         element={
