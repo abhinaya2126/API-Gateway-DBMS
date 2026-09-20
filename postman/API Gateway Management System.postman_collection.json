@@ -705,7 +705,7 @@
             "url": "{{base_url}}/api/keys",
             "auth": {
               "type": "bearer",
-                "raw": "{\n  \"username\": \"test_user\",\n  \"email\": \"testuser@apigw.local\",\n  \"password\": \"TestStrong@12345\",\n  \"role_id\": 2\n}",
+              "bearer": [
                 {
                   "key": "token",
                   "value": "{{token}}",
