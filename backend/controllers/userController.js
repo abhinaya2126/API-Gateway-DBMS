@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const pool = require("../config/db");
 const { validationError, isPositiveInteger, isBooleanLike } = require("../utils/validator");
+const { BCRYPT_ROUNDS, isStrongPassword } = require("./authController");
 const { logAudit } = require("../utils/auditLogger");
 
 const getUsers = async (req, res, next) => {
@@ -79,11 +80,11 @@ const createUser = async (req, res, next) => {
         const errors = [];
         if (typeof username !== "string" || !username.trim() || username.length > 50) errors.push("username must be a non-empty string up to 50 characters");
         if (typeof email !== "string" || !/^\S+@\S+\.\S+$/.test(email) || email.length > 100) errors.push("email must be valid");
-        if (typeof password !== "string" || password.length < 8) errors.push("password must be at least 8 characters");
+        if (!isStrongPassword(password)) errors.push("password must be at least 12 characters with upper, lower, number, and symbol");
         if (!isPositiveInteger(role_id)) errors.push("role_id must be a positive integer");
         if (errors.length) return validationError(res, errors);
 
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
         const [result] = await pool.execute(`
             INSERT INTO users

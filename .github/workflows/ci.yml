@@ -88,8 +88,9 @@ jobs:
           DB_USER: root
           DB_PASSWORD: test
           DB_NAME: api_gateway_mgmt
-          JWT_SECRET: ci-test-secret
-          CORS_ORIGIN: http://localhost:5173
+          JWT_SECRET: ci-test-secret-that-is-at-least-32-characters-long
+          CORS_ORIGIN: http://localhost:5173,http://127.0.0.1:5173
+          ALLOW_SELF_REGISTRATION: true
         run: |
           node start-all.js > /tmp/api-gateway.log 2>&1 &
           sleep 3

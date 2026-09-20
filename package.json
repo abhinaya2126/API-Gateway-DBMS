@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start:all": "node start-all.js"
+    "setup": "npm install --prefix backend; npm install --prefix frontend; npm install --prefix services/user-service; npm install --prefix services/product-service; npm install --prefix services/order-service; npm install --prefix services/payment-service; npm --prefix backend run db:setup",
+    "db:setup": "npm --prefix backend run db:setup",
+    "start:all": "node start-all.js",
+    "dev:all": "node start-dev-all.js"
   }
 }

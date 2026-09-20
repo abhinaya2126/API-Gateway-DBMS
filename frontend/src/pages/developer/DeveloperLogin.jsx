@@ -6,8 +6,8 @@ import { useAuth } from "../../context/useAuth";
 function DeveloperLogin() {
   const { login, user } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("priya.dev@apigw.local");
-  const [password, setPassword] = useState("Dev@123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -127,6 +127,8 @@ function DeveloperLogin() {
                 {loading ? "Signing in..." : "Sign in →"}
               </button>
             </form>
+
+            <Link className="login-register-link" to="/register">Create account</Link>
 
             <div className="login-security">
               <span className="security-icon">🔒</span>

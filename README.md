@@ -11,23 +11,16 @@ A full-stack **API Gateway Management System** developed as a database managemen
 * Role-based access control
 * Separate developer and admin portals on the same Vite app
 
-## 🔐 Demo accounts and portals
+## 🔐 Portals and account creation
 
-Developer portal:
+Developer portal: http://localhost:5173/login. Create a developer account from the
+Create account link when `ALLOW_SELF_REGISTRATION=true`, or have an administrator
+create it from Admin -> Users.
 
-- URL: http://localhost:5173
-- Login: http://localhost:5173/login
-- Email: priya.dev@apigw.local
-- Password: Dev@123
-
-Admin panel:
-
-- URL: http://localhost:5173/admin
-- Login: http://localhost:5173/admin/login
-- Email: arjun.admin@apigw.local
-- Password: Admin@123
-
-The seed data includes both an ADMIN and a DEVELOPER account for the default demo flow.
+Admin panel: http://localhost:5173/admin/login. Admin credentials come from the
+`ADMIN_EMAIL`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD` environment variables. When
+the password is omitted, `npm run create-admin` writes the generated password only
+to the ignored `backend/.admin-credentials.txt` file.
 
 ### User Management
 

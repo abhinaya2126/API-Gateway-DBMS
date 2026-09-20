@@ -4,12 +4,25 @@ const generateToken = require("../utils/generateToken");
 const { logAudit } = require("../utils/auditLogger");
 
 const loginAttempts = new Map();
+const registrationAttempts = new Map();
 const LOGIN_LIMIT = 10;
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const REGISTRATION_LIMIT = 5;
+const BCRYPT_ROUNDS = 12;
+
+const isStrongPassword = (password) => (
+    typeof password === "string" &&
+    password.length >= 12 &&
+    /[a-z]/.test(password) &&
+    /[A-Z]/.test(password) &&
+    /\d/.test(password) &&
+    /[^A-Za-z0-9]/.test(password)
+);
 
 const login = async (req, res, next) => {
     try {
-        const { email, password } = req.body;
+        const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+        const password = req.body.password;
         const clientIp = req.ip || req.socket.remoteAddress || "unknown";
         const now = Date.now();
         const attempts = loginAttempts.get(clientIp);
@@ -43,7 +56,7 @@ const login = async (req, res, next) => {
                 r.role_name
              FROM users u
              INNER JOIN roles r ON u.role_id = r.role_id
-             WHERE u.email = ?`,
+             WHERE LOWER(u.email) = ?`,
             [email]
         );
 
@@ -108,6 +121,58 @@ const login = async (req, res, next) => {
     }
 };
 
+const register = async (req, res, next) => {
+    try {
+        if (String(process.env.ALLOW_SELF_REGISTRATION).toLowerCase() !== "true") {
+            return res.status(403).json({ success: false, message: "Self-registration is disabled" });
+        }
+
+        const username = typeof req.body.username === "string" ? req.body.username.trim() : "";
+        const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+        const { password } = req.body;
+        const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+        const now = Date.now();
+        const attempts = registrationAttempts.get(clientIp);
+
+        if (attempts && now - attempts.startedAt < LOGIN_WINDOW_MS && attempts.count >= REGISTRATION_LIMIT) {
+            return res.status(429).json({ success: false, message: "Too many registration attempts. Try again later." });
+        }
+
+        if (!attempts || now - attempts.startedAt >= LOGIN_WINDOW_MS) {
+            registrationAttempts.set(clientIp, { startedAt: now, count: 0 });
+        }
+        registrationAttempts.get(clientIp).count += 1;
+
+        if (!username || username.length > 50 || !/^\S+@\S+\.\S+$/.test(email) || !isStrongPassword(password)) {
+            return res.status(400).json({
+                success: false,
+                message: "Username, valid email, and a 12-character password with upper, lower, number, and symbol are required"
+            });
+        }
+
+        const [[role]] = await pool.execute("SELECT role_id FROM roles WHERE role_name = 'DEVELOPER'");
+        if (!role) {
+            return res.status(500).json({ success: false, message: "Developer role is not configured" });
+        }
+
+        const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+        const [result] = await pool.execute(
+            "INSERT INTO users (username, email, password_hash, role_id) VALUES (?, ?, ?, ?)",
+            [username, email, passwordHash, role.role_id]
+        );
+
+        res.status(201).json({ success: true, message: "Developer account created", user_id: result.insertId });
+    } catch (error) {
+        if (error.code === "ER_DUP_ENTRY") {
+            return res.status(409).json({ success: false, message: "Username or email already exists" });
+        }
+        next(error);
+    }
+};
+
 module.exports = {
-    login
+    login,
+    register,
+    BCRYPT_ROUNDS,
+    isStrongPassword
 };

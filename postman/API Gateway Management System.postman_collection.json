@@ -15,9 +15,17 @@
       "value": ""
     },
     {
-      "key": "api_key",
-      "value": "agw_live_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
+      "key": "adminEmail",
+      "value": ""
     },
+    {
+      "key": "adminPassword",
+      "value": ""
+    },
+      {
+        "key": "api_key",
+        "value": ""
+      },
     {
       "key": "api_key_id",
       "value": "1"
@@ -68,7 +76,7 @@
             "url": "{{base_url}}/api/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"arjun.admin@apigw.local\",\n  \"password\": \"Admin@123\"\n}",
+                "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
