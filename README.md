@@ -9,6 +9,25 @@ A full-stack **API Gateway Management System** developed as a database managemen
 * User login using JWT authentication
 * Protected API endpoints
 * Role-based access control
+* Separate developer and admin portals on the same Vite app
+
+## 🔐 Demo accounts and portals
+
+Developer portal:
+
+- URL: http://localhost:5173
+- Login: http://localhost:5173/login
+- Email: priya.dev@apigw.local
+- Password: Dev@123
+
+Admin panel:
+
+- URL: http://localhost:5173/admin
+- Login: http://localhost:5173/admin/login
+- Email: arjun.admin@apigw.local
+- Password: Admin@123
+
+The seed data includes both an ADMIN and a DEVELOPER account for the default demo flow.
 
 ### User Management
 
@@ -150,6 +169,27 @@ API-Gateway-DBMS/
 git clone https://github.com/abhinaya2126/API-Gateway-DBMS.git
 cd API-Gateway-DBMS
 ```
+
+## Fresh database setup
+
+From PowerShell, set the database variables from `backend/.env`, then run the
+scripts with MySQL Shell so stored procedures and triggers honor `DELIMITER`:
+
+```powershell
+$env:MYSQL_PWD = "your_mysql_password"
+mysqlsh --sql --host=localhost --port=3306 --user=root --file=database/schema.sql
+mysqlsh --sql --host=localhost --port=3306 --user=root --file=database/seed.sql
+mysqlsh --sql --host=localhost --port=3306 --user=root --file=database/indexes.sql
+mysqlsh --sql --host=localhost --port=3306 --user=root --file=database/views.sql
+mysqlsh --sql --host=localhost --port=3306 --user=root --file=database/procedures.sql
+mysqlsh --sql --host=localhost --port=3306 --user=root --file=database/triggers.sql
+mysqlsh --sql --host=localhost --port=3306 --user=root --file=database/migrations/001_api_gateway_configuration.sql
+Remove-Item Env:MYSQL_PWD
+```
+
+For repeatable Windows QA setup, run `powershell -ExecutionPolicy Bypass -File
+qa-tests/reset-test-db.ps1`; it recreates the isolated `api_gateway_test`
+database and never changes `api_gateway_mgmt`.
 
 ---
 

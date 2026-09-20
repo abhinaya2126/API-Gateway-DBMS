@@ -54,6 +54,8 @@ CREATE TABLE apis (
     api_id      INT AUTO_INCREMENT PRIMARY KEY,
     api_name    VARCHAR(100) NOT NULL,
     description VARCHAR(255) DEFAULT NULL,
+    base_url    VARCHAR(255) DEFAULT NULL,
+    rate_limit_per_min INT DEFAULT NULL,
     owner_id    INT NOT NULL,
     is_active   TINYINT(1) NOT NULL DEFAULT 1,
     created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -13,6 +13,8 @@ function APIs() {
 
   const [apiName, setApiName] = useState("");
   const [description, setDescription] = useState("");
+  const [baseUrl, setBaseUrl] = useState("");
+  const [rateLimit, setRateLimit] = useState("60");
   const [ownerId, setOwnerId] = useState("");
 
   const fetchApis = async () => {
@@ -32,7 +34,7 @@ function APIs() {
   };
 
   useEffect(() => {
-    fetchApis();
+    Promise.resolve().then(fetchApis);
   }, []);
 
   const handleCreateApi = async (e) => {
@@ -45,11 +47,15 @@ function APIs() {
       await api.post("/apis", {
         api_name: apiName,
         description,
+        base_url: baseUrl || null,
+        rate_limit_per_min: rateLimit ? Number(rateLimit) : null,
         owner_id: Number(ownerId),
       });
 
       setApiName("");
       setDescription("");
+      setBaseUrl("");
+      setRateLimit("60");
       setOwnerId("");
       setShowForm(false);
 
@@ -207,6 +213,28 @@ function APIs() {
             className="api-create-form"
             onSubmit={handleCreateApi}
           >
+
+            <div className="api-form-field">
+              <label htmlFor="base-url">Service Base URL</label>
+              <input
+                id="base-url"
+                type="url"
+                value={baseUrl}
+                onChange={(e) => setBaseUrl(e.target.value)}
+                placeholder="http://localhost:6001"
+              />
+            </div>
+
+            <div className="api-form-field">
+              <label htmlFor="rate-limit">Requests per minute</label>
+              <input
+                id="rate-limit"
+                type="number"
+                value={rateLimit}
+                onChange={(e) => setRateLimit(e.target.value)}
+                min="1"
+              />
+            </div>
 
             <div className="api-form-field">
               <label htmlFor="api-name">

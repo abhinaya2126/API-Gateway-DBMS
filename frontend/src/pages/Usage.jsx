@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import { useAuth } from "../context/useAuth";
 
 function Usage() {
+  const { user } = useAuth();
   const [logs, setLogs] = useState([]);
 
   const [stats, setStats] = useState({
@@ -44,31 +46,24 @@ function Usage() {
     });
   };
 
-  const fetchLogs = async () => {
-    try {
-      setError("");
-
-      const response = await api.get("/usage");
-
-      const fetchedLogs = response.data.logs || [];
-
-      setLogs(fetchedLogs);
-      calculateStats(fetchedLogs);
-    } catch (err) {
-      console.error("Usage logs error:", err);
-
-      setError(
-        err.response?.data?.message ||
-          "Unable to load usage logs."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchLogs();
-  }, []);
+    const loadLogs = async () => {
+      try {
+        setError("");
+        const response = await api.get(user?.role === "ADMIN" ? "/usage" : "/usage/my");
+        const fetchedLogs = response.data.logs || [];
+        setLogs(fetchedLogs);
+        calculateStats(fetchedLogs);
+      } catch (err) {
+        console.error("Usage logs error:", err);
+        setError(err.response?.data?.message || "Unable to load usage logs.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    Promise.resolve().then(loadLogs);
+  }, [user?.role]);
 
   const getMethodClass = (method) => {
     return `usage-method ${String(method || "GET").toLowerCase()}`;

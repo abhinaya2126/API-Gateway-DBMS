@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 
 function Dashboard() {
   const { user } = useAuth();
@@ -19,22 +19,23 @@ function Dashboard() {
         setLoading(true);
         setError("");
 
-        const [
-          usersResponse,
-          apisResponse,
-          usageResponse,
-          auditResponse,
-        ] = await Promise.all([
-          api.get("/users"),
+        const [summaryResponse, apisResponse, usageResponse] = await Promise.all([
+          api.get("/analytics/summary"),
           api.get("/apis"),
           api.get("/usage/my"),
-          api.get("/audit"),
         ]);
 
-        setUsers(usersResponse.data.count || 0);
         setApis(apisResponse.data.count || 0);
-        setUsage(usageResponse.data.count || 0);
-        setAudit(auditResponse.data.count || 0);
+        setUsage(summaryResponse.data.summary?.total_requests || usageResponse.data.count || 0);
+
+        if (user?.role === "ADMIN") {
+          const [usersResponse, auditResponse] = await Promise.all([
+            api.get("/users"),
+            api.get("/audit"),
+          ]);
+          setUsers(usersResponse.data.count || 0);
+          setAudit(auditResponse.data.count || 0);
+        }
       } catch (err) {
         console.error("Dashboard error:", err);
         setError("Unable to load dashboard data.");
@@ -44,7 +45,7 @@ function Dashboard() {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [user?.role]);
 
   if (loading) {
     return (

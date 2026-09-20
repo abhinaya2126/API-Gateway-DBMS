@@ -1,0 +1,8 @@
+{
+  "name": "api-gateway-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start:all": "node start-all.js"
+  }
+}

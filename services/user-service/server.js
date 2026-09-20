@@ -5,6 +5,14 @@ const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+    res.setHeader(
+        "X-Request-ID",
+        req.get("X-Request-ID") || "missing"
+    );
+    next();
+});
+
 const PORT = 6001;
 
 const users = [
@@ -24,6 +32,13 @@ const users = [
         email: "charlie@example.com"
     }
 ];
+
+app.get("/health", (req, res) => {
+    res.json({
+        success: true,
+        service: "User Service"
+    });
+});
 
 app.get("/users", (req, res) => {
     res.status(200).json({

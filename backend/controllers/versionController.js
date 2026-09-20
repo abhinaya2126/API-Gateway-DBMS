@@ -1,4 +1,6 @@
 const pool = require("../config/db");
+const { validationError, isPositiveInteger, isBooleanLike } = require("../utils/validator");
+const { logAudit } = require("../utils/auditLogger");
 
 const getVersionsByApi = async (req, res, next) => {
     try {
@@ -35,12 +37,11 @@ const createVersion = async (req, res, next) => {
             is_active
         } = req.body;
 
-        if (!version_number) {
-            return res.status(400).json({
-                success: false,
-                message: "version_number is required"
-            });
-        }
+        const errors = [];
+        if (typeof version_number !== "string" || !/^v\d{1,3}$/.test(version_number)) errors.push("version_number must look like v1");
+        if (!isPositiveInteger(apiId)) errors.push("apiId must be a positive integer");
+        if (is_active != null && !isBooleanLike(is_active)) errors.push("is_active must be boolean");
+        if (errors.length) return validationError(res, errors);
 
         const [result] = await pool.execute(`
             INSERT INTO api_versions
@@ -57,6 +58,7 @@ const createVersion = async (req, res, next) => {
             message: "API version created successfully",
             version_id: result.insertId
         });
+        await logAudit({ userId: req.user.user_id, action: "VERSION_CREATED", entityType: "api_versions", entityId: result.insertId, details: version_number });
     } catch (error) {
         if (error.code === "ER_DUP_ENTRY") {
             return res.status(409).json({
@@ -77,6 +79,11 @@ const updateVersion = async (req, res, next) => {
             is_active,
             deprecated_at
         } = req.body;
+
+        const errors = [];
+        if (version_number != null && (typeof version_number !== "string" || !/^v\d{1,3}$/.test(version_number))) errors.push("version_number must look like v1");
+        if (is_active != null && !isBooleanLike(is_active)) errors.push("is_active must be boolean");
+        if (errors.length) return validationError(res, errors);
 
         const [result] = await pool.execute(`
             UPDATE api_versions
@@ -103,6 +110,7 @@ const updateVersion = async (req, res, next) => {
             success: true,
             message: "API version updated successfully"
         });
+        await logAudit({ userId: req.user.user_id, action: "VERSION_UPDATED", entityType: "api_versions", entityId: id, details: "Version updated" });
     } catch (error) {
         next(error);
     }
@@ -128,6 +136,7 @@ const deleteVersion = async (req, res, next) => {
             success: true,
             message: "API version deleted successfully"
         });
+        await logAudit({ userId: req.user.user_id, action: "VERSION_DELETED", entityType: "api_versions", entityId: id, details: "Version deleted" });
     } catch (error) {
         next(error);
     }

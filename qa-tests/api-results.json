@@ -1,0 +1,568 @@
+{
+  "results": [
+    {
+      "name": "login ADMIN",
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"Login successful\",\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6ImFyanVuLmFkbWluQGFwaWd3LmxvY2FsIiwicm9sZV9pZCI6MSwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzg5ODk0MzU3LCJleHAiOjE3ODk4OTc5NTd9.HCIpDc6v9dBh_nz7fF_02Uqr0wtE0QwDyGkd2hOhuQY\",\"user\":{\"user_id\":1,\"username\":\"admin_arjun\",\"email\":\"arjun.admin@apigw.local\",\"role_id\":1,\"role\":\"ADMIN\"}}"
+    },
+    {
+      "name": "login DEVELOPER",
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"Login successful\",\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6InByaXlhLmRldkBhcGlndy5sb2NhbCIsInJvbGVfaWQiOjIsInJvbGUiOiJERVZFTE9QRVIiLCJpYXQiOjE3ODk4OTQzNTcsImV4cCI6MTc4OTg5Nzk1N30.Vhan6SwZNumi2Tj9c9qxXS1W0TiAn98Ov3G3k4E_C3w\",\"user\":{\"user_id\":2,\"username\":\"dev_priya\",\"email\":\"priya.dev@apigw.local\",\"role_id\":2,\"role\":\"DEVELOPER\"}}"
+    },
+    {
+      "name": "login USER",
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"Login successful\",\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJlbWFpbCI6InVzZXIuZGVtb0BhcGlndy5sb2NhbCIsInJvbGVfaWQiOjMsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzg5ODk0MzU3LCJleHAiOjE3ODk4OTc5NTd9.Cab4tJq3vGACBZcC_ufApmUvCo32bqCvIf7xRIPssRM\",\"user\":{\"user_id\":5,\"username\":\"gateway_user\",\"email\":\"user.demo@apigw.local\",\"role_id\":3,\"role\":\"USER\"}}"
+    },
+    {
+      "name": "login wrong password",
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 401,
+      "body": "{\"success\":false,\"message\":\"Invalid email or password\"}"
+    },
+    {
+      "name": "missing login fields",
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"Email and password are required\"}"
+    },
+    {
+      "name": "login inactive user",
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 403,
+      "body": "{\"success\":false,\"message\":\"User account is inactive\"}"
+    },
+    {
+      "name": "login nonexistent user",
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 401,
+      "body": "{\"success\":false,\"message\":\"Invalid email or password\"}"
+    },
+    {
+      "name": "protected no token",
+      "method": "GET",
+      "url": "/api/users",
+      "status": 401,
+      "body": "{\"success\":false,\"message\":\"Authentication token required\"}"
+    },
+    {
+      "name": "protected invalid token",
+      "method": "GET",
+      "url": "/api/users",
+      "status": 401,
+      "body": "{\"success\":false,\"message\":\"Invalid or expired authentication token\"}"
+    },
+    {
+      "name": "admin endpoint as developer",
+      "method": "GET",
+      "url": "/api/users",
+      "status": 403,
+      "body": "{\"success\":false,\"message\":\"You do not have permission to perform this action\"}"
+    },
+    {
+      "name": "developer-only endpoint as user",
+      "method": "POST",
+      "url": "/api/apis",
+      "status": 403,
+      "body": "{\"success\":false,\"message\":\"You do not have permission to perform this action\"}"
+    },
+    {
+      "name": "users list",
+      "method": "GET",
+      "url": "/api/users",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":5,\"users\":[{\"user_id\":1,\"username\":\"admin_arjun\",\"email\":\"arjun.admin@apigw.local\",\"role_id\":1,\"role_name\":\"ADMIN\",\"is_active\":1,\"created_at\":\"2026-09-20T08:51:42.000Z\",\"updated_at\":\"2026-09-20T08:51:42.000Z\"},{\"user_id\":2,\"username\":\"dev_priya\",\"email\":\"priya.dev@apigw.local\",\"role_id\":2,\"role_name\":\"DEVELOPER\",\"is_active\":1,\"created_at\":\"2026-09-20T08:51:42.000Z\",\"updated_at\":\"2026-09-20T08:51:42.000Z\"},{\"user_id\":3,\"username\":\"dev_karthik\",\"email\":\"karthik.dev@apigw..."
+    },
+    {
+      "name": "user by id",
+      "method": "GET",
+      "url": "/api/users/1",
+      "status": 200,
+      "body": "{\"success\":true,\"user\":{\"user_id\":1,\"username\":\"admin_arjun\",\"email\":\"arjun.admin@apigw.local\",\"role_id\":1,\"role_name\":\"ADMIN\",\"is_active\":1,\"created_at\":\"2026-09-20T08:51:42.000Z\",\"updated_at\":\"2026-09-20T08:51:42.000Z\"}}"
+    },
+    {
+      "name": "user create",
+      "method": "POST",
+      "url": "/api/users",
+      "status": 201,
+      "body": "{\"success\":true,\"message\":\"User created successfully\",\"user_id\":6}"
+    },
+    {
+      "name": "duplicate user email",
+      "method": "POST",
+      "url": "/api/users",
+      "status": 409,
+      "body": "{\"success\":false,\"message\":\"Username or email already exists\"}"
+    },
+    {
+      "name": "invalid user input",
+      "method": "POST",
+      "url": "/api/users",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"Validation failed\",\"errors\":[\"email must be valid\",\"password must be at least 8 characters\"]}"
+    },
+    {
+      "name": "user update",
+      "method": "PUT",
+      "url": "/api/users/6",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"User updated successfully\"}"
+    },
+    {
+      "name": "user deactivate",
+      "method": "PUT",
+      "url": "/api/users/6",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"User updated successfully\"}"
+    },
+    {
+      "name": "user delete",
+      "method": "DELETE",
+      "url": "/api/users/6",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"User deleted successfully\"}"
+    },
+    {
+      "name": "delete last admin",
+      "method": "DELETE",
+      "url": "/api/users/1",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"You cannot delete your own account\"}"
+    },
+    {
+      "name": "delete self",
+      "method": "DELETE",
+      "url": "/api/users/2",
+      "status": 403,
+      "body": "{\"success\":false,\"message\":\"You do not have permission to perform this action\"}"
+    },
+    {
+      "name": "API create",
+      "method": "POST",
+      "url": "/api/apis",
+      "status": 201,
+      "body": "{\"success\":true,\"message\":\"API created successfully\",\"api_id\":5}"
+    },
+    {
+      "name": "API list",
+      "method": "GET",
+      "url": "/api/apis",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":5,\"apis\":[{\"api_id\":1,\"api_name\":\"User Management API\",\"description\":\"Manages user accounts and profiles\",\"base_url\":\"http://localhost:6001\",\"rate_limit_per_min\":60,\"owner_id\":2,\"owner_username\":\"dev_priya\",\"is_active\":1,\"created_at\":\"2026-09-20T08:51:42.000Z\"},{\"api_id\":2,\"api_name\":\"Product API\",\"description\":\"Manages product catalog\",\"base_url\":\"http://localhost:6002\",\"rate_limit_per_min\":60,\"owner_id\":3,\"owner_username\":\"dev_karthik\",\"is_active\":1,\"created_at\":\"202..."
+    },
+    {
+      "name": "API get",
+      "method": "GET",
+      "url": "/api/apis/5",
+      "status": 200,
+      "body": "{\"success\":true,\"api\":{\"api_id\":5,\"api_name\":\"QA API\",\"description\":\"throwaway\",\"base_url\":\"http://localhost:6001\",\"rate_limit_per_min\":60,\"owner_id\":1,\"owner_username\":\"admin_arjun\",\"is_active\":1,\"created_at\":\"2026-09-20T08:52:37.000Z\"}}"
+    },
+    {
+      "name": "duplicate API",
+      "method": "POST",
+      "url": "/api/apis",
+      "status": 409,
+      "body": "{\"success\":false,\"message\":\"API name already exists\"}"
+    },
+    {
+      "name": "invalid API",
+      "method": "POST",
+      "url": "/api/apis",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"Validation failed\",\"errors\":[\"api_name must be a non-empty string up to 100 characters\",\"owner_id must be a positive integer\"]}"
+    },
+    {
+      "name": "API update base_url",
+      "method": "PUT",
+      "url": "/api/apis/5",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"API updated successfully\"}"
+    },
+    {
+      "name": "API delete",
+      "method": "DELETE",
+      "url": "/api/apis/5",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"API deleted successfully\"}"
+    },
+    {
+      "name": "version create",
+      "method": "POST",
+      "url": "/api/versions/api/1",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"Validation failed\",\"errors\":[\"version_number must look like v1\"]}"
+    },
+    {
+      "name": "versions list",
+      "method": "GET",
+      "url": "/api/versions/api/1",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":2,\"versions\":[{\"version_id\":1,\"api_id\":1,\"version_number\":\"v1\",\"is_active\":1,\"released_at\":\"2024-01-10T03:30:00.000Z\",\"deprecated_at\":null},{\"version_id\":2,\"api_id\":1,\"version_number\":\"v2\",\"is_active\":1,\"released_at\":\"2025-06-01T03:30:00.000Z\",\"deprecated_at\":null}]}"
+    },
+    {
+      "name": "duplicate version",
+      "method": "POST",
+      "url": "/api/versions/api/1",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"Validation failed\",\"errors\":[\"version_number must look like v1\"]}"
+    },
+    {
+      "name": "invalid version",
+      "method": "POST",
+      "url": "/api/versions/api/1",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"Validation failed\",\"errors\":[\"version_number must look like v1\"]}"
+    },
+    {
+      "name": "route create",
+      "method": "POST",
+      "url": "/api/routes/version/2",
+      "status": 201,
+      "body": "{\"success\":true,\"message\":\"API route created successfully\",\"route_id\":11}"
+    },
+    {
+      "name": "routes list",
+      "method": "GET",
+      "url": "/api/routes/version/2",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":3,\"routes\":[{\"route_id\":1,\"version_id\":2,\"path\":\"/users\",\"http_method\":\"GET\",\"description\":\"List all users\",\"is_active\":1,\"created_at\":\"2026-09-20T08:51:42.000Z\"},{\"route_id\":2,\"version_id\":2,\"path\":\"/users/:id\",\"http_method\":\"GET\",\"description\":\"Get a single user by id\",\"is_active\":1,\"created_at\":\"2026-09-20T08:51:42.000Z\"},{\"route_id\":11,\"version_id\":2,\"path\":\"/qa\",\"http_method\":\"GET\",\"description\":\"throwaway\",\"is_active\":1,\"created_at\":\"2026-09-20T08:52:37.000Z\"}]}"
+    },
+    {
+      "name": "duplicate route",
+      "method": "POST",
+      "url": "/api/routes/version/2",
+      "status": 409,
+      "body": "{\"success\":false,\"message\":\"This route already exists for this API version\"}"
+    },
+    {
+      "name": "invalid route",
+      "method": "POST",
+      "url": "/api/routes/version/2",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"Validation failed\",\"errors\":[\"path must start with / and be up to 150 characters\",\"http_method is invalid\"]}"
+    },
+    {
+      "name": "route update",
+      "method": "PUT",
+      "url": "/api/routes/11",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"API route updated successfully\"}"
+    },
+    {
+      "name": "route delete",
+      "method": "DELETE",
+      "url": "/api/routes/11",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"API route deleted successfully\"}"
+    },
+    {
+      "name": "permissions list",
+      "method": "GET",
+      "url": "/api/permissions",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":8,\"permissions\":[{\"permission_id\":1,\"permission_name\":\"users:read\",\"description\":\"View user records\"},{\"permission_id\":2,\"permission_name\":\"users:write\",\"description\":\"Create or modify user records\"},{\"permission_id\":3,\"permission_name\":\"products:read\",\"description\":\"View product catalog\"},{\"permission_id\":4,\"permission_name\":\"products:write\",\"description\":\"Create or modify products\"},{\"permission_id\":5,\"permission_name\":\"orders:read\",\"description\":\"View orders\"},{\"per..."
+    },
+    {
+      "name": "user permissions",
+      "method": "GET",
+      "url": "/api/permissions/user/2",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":5,\"permissions\":[{\"permission_id\":1,\"permission_name\":\"users:read\",\"description\":\"View user records\",\"granted_at\":\"2026-09-20T08:51:42.000Z\",\"granted_by\":1},{\"permission_id\":3,\"permission_name\":\"products:read\",\"description\":\"View product catalog\",\"granted_at\":\"2026-09-20T08:51:42.000Z\",\"granted_by\":1},{\"permission_id\":4,\"permission_name\":\"products:write\",\"description\":\"Create or modify products\",\"granted_at\":\"2026-09-20T08:51:42.000Z\",\"granted_by\":1},{\"permission_id\":5..."
+    },
+    {
+      "name": "grant permission",
+      "method": "POST",
+      "url": "/api/permissions/user/2",
+      "status": 201,
+      "body": "{\"success\":true,\"message\":\"Permission granted successfully\"}"
+    },
+    {
+      "name": "duplicate grant",
+      "method": "POST",
+      "url": "/api/permissions/user/2",
+      "status": 409,
+      "body": "{\"success\":false,\"message\":\"Permission is already assigned to this user\"}"
+    },
+    {
+      "name": "revoke permission",
+      "method": "DELETE",
+      "url": "/api/permissions/user/2/7",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"Permission revoked successfully\"}"
+    },
+    {
+      "name": "revoke nonexistent permission",
+      "method": "DELETE",
+      "url": "/api/permissions/user/2/99999",
+      "status": 404,
+      "body": "{\"success\":false,\"message\":\"Permission assignment not found\"}"
+    },
+    {
+      "name": "grant blocked non-admin",
+      "method": "POST",
+      "url": "/api/permissions/user/2",
+      "status": 403,
+      "body": "{\"success\":false,\"message\":\"You do not have permission to perform this action\"}"
+    },
+    {
+      "name": "API key create",
+      "method": "POST",
+      "url": "/api/keys",
+      "status": 201,
+      "body": "{\"success\":true,\"message\":\"API key created successfully\",\"key_id\":5,\"api_key\":\"ak_3555753e79fbc6d6df7d6e3387f9287cc02a048008fd9395\"}"
+    },
+    {
+      "name": "API key list masked",
+      "method": "GET",
+      "url": "/api/keys",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":5,\"keys\":[{\"key_id\":5,\"user_id\":1,\"username\":\"admin_arjun\",\"key_name\":\"qa-key\",\"api_key\":\"ak_355...9395\",\"is_active\":1,\"created_at\":\"2026-09-20T08:52:37.000Z\",\"expires_at\":null},{\"key_id\":4,\"user_id\":4,\"username\":\"dev_meera\",\"key_name\":\"meera-dev-key-old\",\"api_key\":\"agw_li...77hh\",\"is_active\":0,\"created_at\":\"2026-09-20T08:51:42.000Z\",\"expires_at\":\"2024-12-31T18:30:00.000Z\"},{\"key_id\":3,\"user_id\":3,\"username\":\"dev_karthik\",\"key_name\":\"karthik-dev-key\",\"api_key\":\"agw_li...."
+    },
+    {
+      "name": "API key owner list",
+      "method": "GET",
+      "url": "/api/keys/user/1",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":2,\"keys\":[{\"key_id\":5,\"user_id\":1,\"key_name\":\"qa-key\",\"api_key\":\"ak_355...9395\",\"is_active\":1,\"created_at\":\"2026-09-20T08:52:37.000Z\",\"expires_at\":null},{\"key_id\":1,\"user_id\":1,\"key_name\":\"admin-master-key\",\"api_key\":\"agw_li...c3d4\",\"is_active\":1,\"created_at\":\"2026-09-20T08:51:42.000Z\",\"expires_at\":null}]}"
+    },
+    {
+      "name": "API key other user forbidden",
+      "method": "GET",
+      "url": "/api/keys/user/1",
+      "status": 403,
+      "body": "{\"success\":false,\"message\":\"You may only view your own API keys\"}"
+    },
+    {
+      "name": "expired key validation",
+      "method": "POST",
+      "url": "/api/keys",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"expires_at must be a valid future date\",\"errors\":[\"expires_at must be in the future\"]}"
+    },
+    {
+      "name": "API key revoke",
+      "method": "PUT",
+      "url": "/api/keys/5/revoke",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"API key revoked successfully\"}"
+    },
+    {
+      "name": "usage valid",
+      "method": "POST",
+      "url": "/api/usage/simulate",
+      "status": 200,
+      "body": "{\"success\":true,\"message\":\"API request simulated successfully\",\"request\":{\"log_id\":13,\"user_id\":1,\"api_id\":1,\"api_name\":\"User Management API\",\"version\":\"v2\",\"route\":\"/users\",\"http_method\":\"GET\",\"key_id\":1,\"status_code\":200,\"response_time_ms\":2}}"
+    },
+    {
+      "name": "usage invalid key",
+      "method": "POST",
+      "url": "/api/usage/simulate",
+      "status": 403,
+      "body": "{\"success\":false,\"message\":\"API key does not belong to the authenticated user\"}"
+    },
+    {
+      "name": "usage wrong pairing",
+      "method": "POST",
+      "url": "/api/usage/simulate",
+      "status": 404,
+      "body": "{\"success\":false,\"message\":\"API version not found for this API\"}"
+    },
+    {
+      "name": "usage missing fields",
+      "method": "POST",
+      "url": "/api/usage/simulate",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"api_id, version_id and route_id are required\"}"
+    },
+    {
+      "name": "usage admin",
+      "method": "GET",
+      "url": "/api/usage",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":13,\"logs\":[{\"log_id\":13,\"user_id\":1,\"username\":\"admin_arjun\",\"api_id\":1,\"api_name\":\"User Management API\",\"version_id\":2,\"version_number\":\"v2\",\"route_id\":1,\"path\":\"/users\",\"http_method\":\"GET\",\"key_id\":1,\"status_code\":200,\"response_time_ms\":2,\"request_timestamp\":\"2026-09-20T08:52:37.000Z\"},{\"log_id\":12,\"user_id\":2,\"username\":\"dev_priya\",\"api_id\":4,\"api_name\":\"Payment API\",\"version_id\":6,\"version_number\":\"v2\",\"route_id\":8,\"path\":\"/orders\",\"http_method\":\"POST\",\"key_id\":2,\"..."
+    },
+    {
+      "name": "usage my",
+      "method": "GET",
+      "url": "/api/usage/my",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":5,\"logs\":[{\"log_id\":12,\"api_name\":\"Payment API\",\"version_number\":\"v2\",\"path\":\"/orders\",\"http_method\":\"POST\",\"key_id\":2,\"status_code\":200,\"response_time_ms\":150,\"request_timestamp\":\"2026-08-04T10:50:00.000Z\"},{\"log_id\":6,\"api_name\":\"Order API\",\"version_number\":\"v1\",\"path\":\"/products\",\"http_method\":\"POST\",\"key_id\":2,\"status_code\":500,\"response_time_ms\":320,\"request_timestamp\":\"2026-08-02T04:01:10.000Z\"},{\"log_id\":5,\"api_name\":\"Order API\",\"version_number\":\"v1\",\"path\":\"/pr..."
+    },
+    {
+      "name": "audit all",
+      "method": "GET",
+      "url": "/api/audit",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":24,\"total\":24,\"page\":1,\"pageSize\":25,\"logs\":[{\"audit_id\":24,\"user_id\":1,\"username\":\"admin_arjun\",\"action_type\":\"API_KEY_REVOKED\",\"entity_type\":\"api_keys\",\"entity_id\":\"5\",\"description\":\"API key revoked\",\"created_at\":\"2026-09-20T08:52:37.000Z\"},{\"audit_id\":23,\"user_id\":1,\"username\":\"admin_arjun\",\"action_type\":\"API_KEY_CREATED\",\"entity_type\":\"api_keys\",\"entity_id\":\"5\",\"description\":\"qa-key\",\"created_at\":\"2026-09-20T08:52:37.000Z\"},{\"audit_id\":22,\"user_id\":1,\"username\":\"ad..."
+    },
+    {
+      "name": "audit user",
+      "method": "GET",
+      "url": "/api/audit/user/2",
+      "status": 200,
+      "body": "{\"success\":true,\"count\":1,\"total\":1,\"page\":1,\"pageSize\":25,\"logs\":[{\"audit_id\":6,\"user_id\":2,\"username\":\"dev_priya\",\"action_type\":\"LOGIN_SUCCESS\",\"entity_type\":\"users\",\"entity_id\":\"2\",\"description\":\"User logged in\",\"created_at\":\"2026-09-20T08:52:37.000Z\"}]}"
+    },
+    {
+      "name": "analytics summary",
+      "method": "GET",
+      "url": "/api/analytics/summary",
+      "status": 200,
+      "body": "{\"success\":true,\"summary\":{\"total_requests\":13,\"successful_requests\":\"10\",\"failed_requests\":\"3\",\"average_response_time_ms\":\"129.7692\"}}"
+    },
+    {
+      "name": "analytics by api",
+      "method": "GET",
+      "url": "/api/analytics/by-api",
+      "status": 200,
+      "body": "{\"success\":true,\"apis\":[{\"api_id\":2,\"api_name\":\"Product API\",\"request_count\":4,\"average_response_time_ms\":\"131.2500\"},{\"api_id\":1,\"api_name\":\"User Management API\",\"request_count\":4,\"average_response_time_ms\":\"69.2500\"},{\"api_id\":4,\"api_name\":\"Payment API\",\"request_count\":3,\"average_response_time_ms\":\"130.0000\"},{\"api_id\":3,\"api_name\":\"Order API\",\"request_count\":2,\"average_response_time_ms\":\"247.5000\"}]}"
+    },
+    {
+      "name": "analytics status",
+      "method": "GET",
+      "url": "/api/analytics/by-status",
+      "status": 200,
+      "body": "{\"success\":true,\"statuses\":[{\"status_code\":200,\"request_count\":9},{\"status_code\":201,\"request_count\":1},{\"status_code\":402,\"request_count\":1},{\"status_code\":404,\"request_count\":1},{\"status_code\":500,\"request_count\":1}]}"
+    },
+    {
+      "name": "analytics timeseries",
+      "method": "GET",
+      "url": "/api/analytics/timeseries",
+      "status": 200,
+      "body": "{\"success\":true,\"range\":\"24h\",\"timeseries\":[{\"bucket\":\"2026-09-20 14:00:00\",\"request_count\":1}]}"
+    },
+    {
+      "name": "analytics top routes",
+      "method": "GET",
+      "url": "/api/analytics/top-routes",
+      "status": 200,
+      "body": "{\"success\":true,\"routes\":[{\"route_id\":3,\"path\":\"/users\",\"http_method\":\"GET\",\"request_count\":3},{\"route_id\":1,\"path\":\"/users\",\"http_method\":\"GET\",\"request_count\":3},{\"route_id\":8,\"path\":\"/orders\",\"http_method\":\"POST\",\"request_count\":2},{\"route_id\":4,\"path\":\"/users/:id\",\"http_method\":\"GET\",\"request_count\":1},{\"route_id\":2,\"path\":\"/users/:id\",\"http_method\":\"GET\",\"request_count\":1},{\"route_id\":5,\"path\":\"/products\",\"http_method\":\"GET\",\"request_count\":1},{\"route_id\":6,\"path\":\"/products\",\"http_metho..."
+    },
+    {
+      "name": "analytics slowest",
+      "method": "GET",
+      "url": "/api/analytics/slowest-routes",
+      "status": 200,
+      "body": "{\"success\":true,\"routes\":[{\"route_id\":6,\"path\":\"/products\",\"http_method\":\"POST\",\"average_response_time_ms\":\"320.0000\"},{\"route_id\":4,\"path\":\"/users/:id\",\"http_method\":\"GET\",\"average_response_time_ms\":\"210.0000\"},{\"route_id\":5,\"path\":\"/products\",\"http_method\":\"GET\",\"average_response_time_ms\":\"175.0000\"},{\"route_id\":8,\"path\":\"/orders\",\"http_method\":\"POST\",\"average_response_time_ms\":\"140.0000\"},{\"route_id\":7,\"path\":\"/orders\",\"http_method\":\"GET\",\"average_response_time_ms\":\"110.0000\"},{\"route_id\":..."
+    },
+    {
+      "name": "gateway user GET",
+      "method": "GET",
+      "url": "/api/gateway/apis/1/v2/users",
+      "status": 200,
+      "body": "{\"success\":true,\"service\":\"User Service\",\"data\":[{\"id\":1,\"name\":\"Alice Johnson\",\"email\":\"alice@example.com\"},{\"id\":2,\"name\":\"Bob Smith\",\"email\":\"bob@example.com\"},{\"id\":3,\"name\":\"Charlie Brown\",\"email\":\"charlie@example.com\"}],\"gateway\":{\"requestId\":\"a9885fea-d720-4db6-af96-01088badf46b\",\"api\":\"User Management API\",\"version\":\"v2\",\"routeId\":1,\"matchedRoute\":\"/users\"}}"
+    },
+    {
+      "name": "gateway product GET",
+      "method": "GET",
+      "url": "/api/gateway/apis/2/v1/products",
+      "status": 200,
+      "body": "{\"success\":true,\"service\":\"Product Service\",\"data\":[{\"id\":1,\"name\":\"Mechanical Keyboard\",\"price\":89.99,\"stock\":24},{\"id\":2,\"name\":\"USB-C Dock\",\"price\":129.5,\"stock\":12},{\"id\":3,\"name\":\"Studio Headphones\",\"price\":149,\"stock\":8}],\"gateway\":{\"requestId\":\"236ab99e-585f-491a-b4f8-7b3438ec0a95\",\"api\":\"Product API\",\"version\":\"v1\",\"routeId\":5,\"matchedRoute\":\"/products\"}}"
+    },
+    {
+      "name": "gateway product POST",
+      "method": "POST",
+      "url": "/api/gateway/apis/2/v1/products",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"name, non-negative price, and integer stock are required\",\"gateway\":{\"requestId\":\"7eb9c488-6c57-43c1-84a9-0b702c146c43\",\"api\":\"Product API\",\"version\":\"v1\",\"routeId\":6,\"matchedRoute\":\"/products\"}}"
+    },
+    {
+      "name": "gateway order GET",
+      "method": "GET",
+      "url": "/api/gateway/apis/3/v1/orders",
+      "status": 200,
+      "body": "{\"success\":true,\"service\":\"Order Service\",\"data\":[{\"id\":1001,\"customerId\":1,\"items\":[{\"productId\":1,\"quantity\":1}],\"status\":\"confirmed\"},{\"id\":1002,\"customerId\":2,\"items\":[{\"productId\":2,\"quantity\":2}],\"status\":\"processing\"}],\"gateway\":{\"requestId\":\"9c7d81fc-5b36-418c-8566-a3beebf7bb68\",\"api\":\"Order API\",\"version\":\"v1\",\"routeId\":7,\"matchedRoute\":\"/orders\"}}"
+    },
+    {
+      "name": "gateway order POST",
+      "method": "POST",
+      "url": "/api/gateway/apis/3/v1/orders",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"customerId and a non-empty items array are required\",\"gateway\":{\"requestId\":\"3c3f9ad3-607a-4ca4-a082-ac9d4241c196\",\"api\":\"Order API\",\"version\":\"v1\",\"routeId\":8,\"matchedRoute\":\"/orders\"}}"
+    },
+    {
+      "name": "gateway payment GET",
+      "method": "GET",
+      "url": "/api/gateway/apis/4/v2/payments",
+      "status": 200,
+      "body": "{\"success\":true,\"service\":\"Payment Service\",\"data\":[{\"id\":\"pay_1001\",\"orderId\":1001,\"amount\":89.99,\"status\":\"captured\"},{\"id\":\"pay_1002\",\"orderId\":1002,\"amount\":259,\"status\":\"authorized\"}],\"gateway\":{\"requestId\":\"1d01122b-060d-4f97-94ba-f1a80d2eb7e4\",\"api\":\"Payment API\",\"version\":\"v2\",\"routeId\":9,\"matchedRoute\":\"/payments\"}}"
+    },
+    {
+      "name": "gateway payment POST",
+      "method": "POST",
+      "url": "/api/gateway/apis/4/v2/payments",
+      "status": 400,
+      "body": "{\"success\":false,\"message\":\"orderId, positive amount, and method are required\",\"gateway\":{\"requestId\":\"eef67288-40cb-460b-821d-c3e1280fff00\",\"api\":\"Payment API\",\"version\":\"v2\",\"routeId\":10,\"matchedRoute\":\"/payments\"}}"
+    },
+    {
+      "name": "gateway no key",
+      "method": "GET",
+      "url": "/api/gateway/apis/1/v2/users",
+      "status": 401,
+      "body": "{\"success\":false,\"message\":\"API key is required\",\"requestId\":\"55b61026-4bfa-4be2-b3b5-8ec2eea3225a\"}"
+    },
+    {
+      "name": "gateway invalid key",
+      "method": "GET",
+      "url": "/api/gateway/apis/1/v2/users",
+      "status": 401,
+      "body": "{\"success\":false,\"message\":\"Invalid API key\",\"requestId\":\"c4dc292b-0a80-405a-8f04-6517a46c3e2a\"}"
+    },
+    {
+      "name": "gateway route missing",
+      "method": "GET",
+      "url": "/api/gateway/apis/1/v2/missing",
+      "status": 404,
+      "body": "{\"success\":false,\"message\":\"Gateway route not found or inactive\",\"requestId\":\"183e464d-6167-461c-9e6a-9fd09d37caa0\"}"
+    },
+    {
+      "name": "gateway new key",
+      "method": "GET",
+      "url": "/api/gateway/apis/1/v2/users",
+      "status": 401,
+      "body": "{\"success\":false,\"message\":\"API key is inactive or revoked\",\"requestId\":\"2d1868d9-de0a-43d5-98f5-5b43b156e765\"}"
+    }
+  ],
+  "directChecks": [
+    {
+      "port": 6001,
+      "status": 200,
+      "body": "{\"success\":true,\"service\":\"User Service\"}"
+    },
+    {
+      "port": 6002,
+      "status": 200,
+      "body": "{\"success\":true,\"service\":\"Product Service\"}"
+    },
+    {
+      "port": 6003,
+      "status": 200,
+      "body": "{\"success\":true,\"service\":\"Order Service\"}"
+    },
+    {
+      "port": 6004,
+      "status": 200,
+      "body": "{\"success\":true,\"service\":\"Payment Service\"}"
+    }
+  ],
+  "counts": [
+    {
+      "table_name": "api_usage_logs",
+      "count": 18
+    },
+    {
+      "table_name": "audit_logs",
+      "count": 37
+    }
+  ]
+}

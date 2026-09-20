@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import api from "../services/api";
+import { useAuth } from "../context/useAuth";
 
 function ApiKeys() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
   const [keys, setKeys] = useState([]);
   const [users, setUsers] = useState([]);
 
@@ -20,9 +23,9 @@ function ApiKeys() {
   const [visibleKeys, setVisibleKeys] = useState({});
   const [revokingId, setRevokingId] = useState(null);
 
-  const fetchKeys = async () => {
+  const fetchKeys = useCallback(async () => {
     try {
-      const response = await api.get("/keys");
+      const response = await api.get(isAdmin ? "/keys" : `/keys/user/${user.user_id}`);
       setKeys(response.data.keys || []);
     } catch (err) {
       console.error("API keys error:", err);
@@ -32,10 +35,15 @@ function ApiKeys() {
           "Unable to load API keys."
       );
     }
-  };
+  }, [isAdmin, user]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
+      if (!isAdmin) {
+        setUsers([user]);
+        return;
+      }
+
       const response = await api.get("/users");
       setUsers(response.data.users || []);
     } catch (err) {
@@ -46,7 +54,7 @@ function ApiKeys() {
           "Unable to load users."
       );
     }
-  };
+  }, [isAdmin, user]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -54,17 +62,14 @@ function ApiKeys() {
         setLoading(true);
         setError("");
 
-        await Promise.all([
-          fetchKeys(),
-          fetchUsers(),
-        ]);
+        await Promise.all([fetchKeys(), fetchUsers()]);
       } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, []);
+  }, [fetchKeys, fetchUsers]);
 
   const handleCreateKey = async (e) => {
     e.preventDefault();
@@ -74,7 +79,7 @@ function ApiKeys() {
       setError("");
 
       await api.post("/keys", {
-        user_id: Number(userId),
+        user_id: isAdmin ? Number(userId) : user.user_id,
         key_name: keyName,
         expires_at: expiresAt || null,
       });
@@ -331,31 +336,26 @@ function ApiKeys() {
 
             <div className="key-field">
 
-              <label htmlFor="key-user">
-                User
-              </label>
-
-              <select
-                id="key-user"
-                value={userId}
-                onChange={(e) =>
-                  setUserId(e.target.value)
-                }
-                required
-              >
-                <option value="">
-                  Select authorized user
-                </option>
-
-                {users.map((user) => (
-                  <option
-                    key={user.user_id}
-                    value={user.user_id}
+              {isAdmin ? (
+                <>
+                  <label htmlFor="key-user">User</label>
+                  <select
+                    id="key-user"
+                    value={userId}
+                    onChange={(e) => setUserId(e.target.value)}
+                    required
                   >
-                    {user.username}
-                  </option>
-                ))}
-              </select>
+                    <option value="">Select authorized user</option>
+                    {users.map((item) => (
+                      <option key={item.user_id} value={item.user_id}>
+                        {item.username}
+                      </option>
+                    ))}
+                  </select>
+                </>
+              ) : (
+                <p>Key will be issued to your account.</p>
+              )}
 
             </div>
 

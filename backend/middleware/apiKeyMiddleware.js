@@ -27,10 +27,13 @@ const authenticateApiKey = async (req, res, next) => {
                 k.expires_at,
                 u.username,
                 u.email,
+                r.role_name,
                 u.is_active AS user_active
             FROM api_keys k
             INNER JOIN users u
                 ON k.user_id = u.user_id
+            INNER JOIN roles r
+                ON u.role_id = r.role_id
             WHERE k.api_key = ?
             LIMIT 1
             `,
@@ -86,7 +89,8 @@ const authenticateApiKey = async (req, res, next) => {
         req.user = {
             user_id: key.user_id,
             username: key.username,
-            email: key.email
+            email: key.email,
+            role: key.role_name
         };
 
         next();

@@ -6,11 +6,6 @@
 
 USE api_gateway_mgmt;
 
--- users.email: looked up on every login attempt (WHERE email = ?).
--- Already UNIQUE (which creates an index), but declared explicitly
--- here for clarity in the viva.
-CREATE INDEX idx_users_email ON users(email);
-
 -- users.role_id: used whenever we filter/join users by role
 -- (e.g. "list all DEVELOPER users").
 CREATE INDEX idx_users_role_id ON users(role_id);

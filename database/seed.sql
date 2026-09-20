@@ -11,7 +11,8 @@ USE api_gateway_mgmt;
 -- ------------------------------------------------------------
 INSERT INTO roles (role_name, description) VALUES
 ('ADMIN',     'Full administrative access to the gateway'),
-('DEVELOPER', 'Can register APIs and consume permitted routes');
+('DEVELOPER', 'Can register APIs and consume permitted routes'),
+('USER',      'Can consume routes granted by an administrator');
 
 -- ------------------------------------------------------------
 -- USERS
@@ -20,25 +21,26 @@ INSERT INTO roles (role_name, description) VALUES
 -- See README.md "Sample Login Credentials" for the plaintext list.
 -- ------------------------------------------------------------
 INSERT INTO users (username, email, password_hash, role_id, is_active) VALUES
-('admin_arjun',   'arjun.admin@apigw.local',   '$2b$10$wqIt175sZkZii/F7qHkMPes0nGQrCwCc/yaJqJDsMjitSqKFOJzcW', 1, 1), -- Admin@123
-('dev_priya',     'priya.dev@apigw.local',     '$2b$10$WHBSbv4q5k3aEeuX/HWg8ePRqsOXYW/D2l5ty8DsyLUallHbY8HRa', 2, 1), -- Dev@123
-('dev_karthik',   'karthik.dev@apigw.local',   '$2b$10$p0t1tWOdTBO.rwCR8kkApePgC0OygCgiHumqS4CI7USZFzb2FSwEu', 2, 1), -- Dev@456
-('dev_meera',     'meera.dev@apigw.local',     '$2b$10$OZ1I/BeDl5N/7.VspYVwrOcLJJnhuLhZW41chb9ny.dA54CAWO8uC', 2, 0); -- Dev@789 (deactivated)
+('admin_arjun',   'arjun.admin@apigw.local',   '$2b$10$.FtPK6Gh1mdYEHfMKH64d.G7E5BLwB7qfoMEZsscUPNRNBtGw1ycG', 1, 1), -- Admin@123
+('dev_priya',     'priya.dev@apigw.local',     '$2b$10$ybdWWIjhqR3UYe0ZHCu5VemRVOCPT/6ZGDEsmCN7JUTpNifqDN206', 2, 1), -- Dev@123
+('dev_karthik',   'karthik.dev@apigw.local',   '$2b$10$Zgfe1LRTnlqAgrPy7ZAbneV7z012jucazBf1VB604U6plx1X2sphu', 2, 1), -- Dev@456
+('dev_meera',     'meera.dev@apigw.local',     '$2b$10$ZR0UbEigA6r1k73kWx72LeMhbn.mUZHo5zE30jmKAiROzJUCqw8p.', 2, 0), -- Dev@789 (deactivated)
+('gateway_user',   'user.demo@apigw.local',    '$2b$10$zngm17smKRPuPQi3rn4jB.37kQALvS1PbqKsdVBXUiDDCMZviRd/G', 3, 1); -- User@123
 
 -- ------------------------------------------------------------
 -- APIS  (owner_id references users)
 -- ------------------------------------------------------------
-INSERT INTO apis (api_name, description, owner_id, is_active) VALUES
-('User Management API', 'Manages user accounts and profiles', 2, 1),
-('Product API',          'Manages product catalog',            3, 1),
-('Order API',             'Manages customer orders',           2, 1),
-('Payment API',           'Handles payment processing',        3, 1);
+INSERT INTO apis (api_name, description, base_url, rate_limit_per_min, owner_id, is_active) VALUES
+('User Management API', 'Manages user accounts and profiles', 'http://localhost:6001', 60, 2, 1),
+('Product API',          'Manages product catalog',            'http://localhost:6002', 60, 3, 1),
+('Order API',             'Manages customer orders',           'http://localhost:6003', 60, 2, 1),
+('Payment API',           'Handles payment processing',        'http://localhost:6004', 60, 3, 1);
 
 -- ------------------------------------------------------------
 -- API VERSIONS (multiple per API, some active, some deprecated)
 -- ------------------------------------------------------------
 INSERT INTO api_versions (api_id, version_number, is_active, released_at, deprecated_at) VALUES
-(1, 'v1', 0, '2024-01-10 09:00:00', '2025-06-01 00:00:00'), -- User Mgmt v1 (deprecated)
+(1, 'v1', 1, '2024-01-10 09:00:00', NULL),                  -- User Mgmt v1 (demo-compatible)
 (1, 'v2', 1, '2025-06-01 09:00:00', NULL),                  -- User Mgmt v2 (active)
 (2, 'v1', 1, '2024-03-15 09:00:00', NULL),                  -- Product v1 (active)
 (3, 'v1', 1, '2024-05-20 09:00:00', NULL),                  -- Order v1 (active)
@@ -51,6 +53,8 @@ INSERT INTO api_versions (api_id, version_number, is_active, released_at, deprec
 INSERT INTO routes (version_id, path, http_method, description, is_active) VALUES
 (2, '/users',        'GET',  'List all users',            1), -- User Mgmt v2
 (2, '/users/:id',    'GET',  'Get a single user by id',   1), -- User Mgmt v2
+(1, '/users',        'GET',  'List all users',             1), -- User Mgmt v1
+(1, '/users/:id',    'GET',  'Get a single user by id',    1), -- User Mgmt v1
 (3, '/products',     'GET',  'List all products',         1), -- Product v1
 (3, '/products',     'POST', 'Create a new product',      1), -- Product v1
 (4, '/orders',       'GET',  'List all orders',           1), -- Order v1

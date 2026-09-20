@@ -289,6 +289,46 @@ tbody tr:hover {
    LEFT BRAND PANEL
    ========================================================= */
 
+.developer-brand-panel {
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(52, 211, 153, 0.20),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 90%,
+      rgba(16, 185, 129, 0.18),
+      transparent 32%
+    ),
+    linear-gradient(
+      140deg,
+      #022c22 0%,
+      #064e3b 48%,
+      #10b981 100%
+    );
+}
+
+.admin-brand-panel {
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(147, 197, 253, 0.20),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 90%,
+      rgba(59, 130, 246, 0.18),
+      transparent 32%
+    ),
+    linear-gradient(
+      140deg,
+      #0f172a 0%,
+      #172554 48%,
+      #1e3a8a 100%
+    );
+}
+
 .login-brand-panel {
   position: relative;
 
@@ -804,6 +844,16 @@ tbody tr:hover {
    WELCOME BADGE
    ========================================================= */
 
+.developer-badge {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.admin-badge {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
 .welcome-badge {
   display: inline-flex;
 
@@ -1108,6 +1158,16 @@ tbody tr:hover {
    LOGIN BUTTON
    ========================================================= */
 
+.developer-submit {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 8px 22px rgba(16, 185, 129, 0.22);
+}
+
+.admin-submit {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.22);
+}
+
 .login-submit {
   width: 100%;
 
@@ -1321,6 +1381,39 @@ tbody tr:hover {
   background: #22c55e;
 }
 
+.access-denied-page {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  background: #f8fafc;
+}
+
+.access-denied-page h1 {
+  margin: 0;
+  font-size: 52px;
+  color: #0f172a;
+}
+
+.access-denied-page p {
+  margin: 0;
+  color: #475569;
+}
+
+.access-denied-page a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.access-denied-page a:hover {
+  text-decoration: underline;
+}
+
 
 /* =========================================================
    TABLET
@@ -1409,6 +1502,10 @@ tbody tr:hover {
       30px 25px;
 
     border-radius: 15px;
+  }
+
+  .access-denied-page {
+    padding: 48px 20px;
   }
 
   .mobile-logo {
@@ -9849,6 +9946,43 @@ tbody tr:hover {
     align-items: flex-start;
     flex-direction: column;
     gap: 8px;
+  }
+}
+
+@media (max-width: 700px) {
+  .main-layout {
+    display: block;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .app-sidebar {
+    display: none;
+  }
+
+  .content {
+    width: 100%;
+    padding: 18px 14px;
+    box-sizing: border-box;
+  }
+
+  .content > * {
+    max-width: 100%;
+  }
+
+  .dashboard-bottom-grid,
+  .dashboard-panel,
+  .panel-header,
+  .gateway-status-content,
+  .gateway-details {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .panel-header {
+    flex-wrap: wrap;
+    gap: 10px;
   }
 }
 /* =========================================================

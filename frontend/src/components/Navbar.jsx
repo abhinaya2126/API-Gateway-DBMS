@@ -1,6 +1,8 @@
-import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/useAuth";
 
-function Navbar() {
+function Navbar({ portal = "developer", title = "API Gateway", subtitle = "Management System" }) {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
 
   const username = user?.username || "User";
@@ -13,30 +15,23 @@ function Navbar() {
     .slice(0, 2)
     .toUpperCase();
 
+  const handleLogout = () => {
+    logout();
+    navigate(portal === "admin" ? "/admin/login" : "/login", { replace: true });
+  };
+
   return (
     <header className="app-navbar">
-
-      {/* Brand */}
       <div className="navbar-brand">
-        <div className="navbar-logo">
-          ⚡
-        </div>
+        <div className="navbar-logo">⚡</div>
 
         <div className="navbar-brand-text">
-          <span className="navbar-title">
-            API Gateway
-          </span>
-
-          <span className="navbar-subtitle">
-            Management System
-          </span>
+          <span className="navbar-title">{title}</span>
+          <span className="navbar-subtitle">{subtitle}</span>
         </div>
       </div>
 
-
-      {/* Right side */}
       <div className="navbar-right">
-
         <div className="navbar-status">
           <span className="navbar-status-dot"></span>
           System Online
@@ -45,33 +40,19 @@ function Navbar() {
         <div className="navbar-divider"></div>
 
         <div className="navbar-user">
-
-          <div className="navbar-avatar">
-            {initials}
-          </div>
+          <div className="navbar-avatar">{initials}</div>
 
           <div className="navbar-user-info">
-            <span className="navbar-username">
-              {username}
-            </span>
-
-            <span className="navbar-role">
-              {role}
-            </span>
+            <span className="navbar-username">{username}</span>
+            <span className="navbar-role">{role}</span>
           </div>
-
         </div>
 
-        <button
-          className="navbar-logout"
-          onClick={logout}
-        >
+        <button className="navbar-logout" onClick={handleLogout}>
           <span>↪</span>
           Logout
         </button>
-
       </div>
-
     </header>
   );
 }

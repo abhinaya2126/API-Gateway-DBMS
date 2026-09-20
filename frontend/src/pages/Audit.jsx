@@ -26,7 +26,7 @@ function Audit() {
   };
 
   useEffect(() => {
-    fetchAuditLogs();
+    Promise.resolve().then(fetchAuditLogs);
   }, []);
 
   const getInitials = (username) => {

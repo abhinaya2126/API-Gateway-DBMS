@@ -1,4 +1,6 @@
 const pool = require("../config/db");
+const { validMethods, validationError, isPositiveInteger, isBooleanLike } = require("../utils/validator");
+const { logAudit } = require("../utils/auditLogger");
 
 const getRoutesByVersion = async (req, res, next) => {
     try {
@@ -39,12 +41,12 @@ const createRoute = async (req, res, next) => {
             is_active
         } = req.body;
 
-        if (!path || !http_method) {
-            return res.status(400).json({
-                success: false,
-                message: "path and http_method are required"
-            });
-        }
+        const errors = [];
+        if (typeof path !== "string" || !path.startsWith("/") || path.length > 150) errors.push("path must start with / and be up to 150 characters");
+        if (typeof http_method !== "string" || !validMethods.has(http_method.toUpperCase())) errors.push("http_method is invalid");
+        if (!isPositiveInteger(versionId)) errors.push("versionId must be a positive integer");
+        if (is_active != null && !isBooleanLike(is_active)) errors.push("is_active must be boolean");
+        if (errors.length) return validationError(res, errors);
 
         const [result] = await pool.execute(`
             INSERT INTO routes
@@ -69,6 +71,7 @@ const createRoute = async (req, res, next) => {
             message: "API route created successfully",
             route_id: result.insertId
         });
+        await logAudit({ userId: req.user.user_id, action: "ROUTE_CREATED", entityType: "routes", entityId: result.insertId, details: `${http_method} ${path}` });
     } catch (error) {
         if (error.code === "ER_DUP_ENTRY") {
             return res.status(409).json({
@@ -99,6 +102,12 @@ const updateRoute = async (req, res, next) => {
             is_active
         } = req.body;
 
+        const errors = [];
+        if (path != null && (typeof path !== "string" || !path.startsWith("/") || path.length > 150)) errors.push("path must start with / and be up to 150 characters");
+        if (http_method != null && (typeof http_method !== "string" || !validMethods.has(http_method.toUpperCase()))) errors.push("http_method is invalid");
+        if (is_active != null && !isBooleanLike(is_active)) errors.push("is_active must be boolean");
+        if (errors.length) return validationError(res, errors);
+
         const [result] = await pool.execute(`
             UPDATE routes
             SET
@@ -126,6 +135,7 @@ const updateRoute = async (req, res, next) => {
             success: true,
             message: "API route updated successfully"
         });
+        await logAudit({ userId: req.user.user_id, action: "ROUTE_UPDATED", entityType: "routes", entityId: id, details: "Route updated" });
     } catch (error) {
         next(error);
     }
@@ -151,6 +161,7 @@ const deleteRoute = async (req, res, next) => {
             success: true,
             message: "API route deleted successfully"
         });
+        await logAudit({ userId: req.user.user_id, action: "ROUTE_DELETED", entityType: "routes", entityId: id, details: "Route deleted" });
     } catch (error) {
         next(error);
     }

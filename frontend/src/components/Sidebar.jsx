@@ -1,29 +1,32 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/useAuth";
 
 function Sidebar() {
+  const { user } = useAuth();
   const sections = [
     {
       title: "MAIN",
       links: [
         { name: "Dashboard", path: "/dashboard", icon: "⌂" },
         { name: "APIs", path: "/apis", icon: "◈" },
-        { name: "API Keys", path: "/api-keys", icon: "⚿" },
-        { name: "Versions", path: "/versions", icon: "◷" },
-        { name: "Routes", path: "/routes", icon: "⇄" },
+        { name: "Gateway Tester", path: "/gateway-tester", icon: "▷", roles: ["ADMIN", "DEVELOPER", "USER"] },
+        { name: "API Keys", path: "/api-keys", icon: "⚿", roles: ["ADMIN"] },
+        { name: "Versions", path: "/versions", icon: "◷", roles: ["ADMIN", "DEVELOPER"] },
+        { name: "Routes", path: "/routes", icon: "⇄", roles: ["ADMIN", "DEVELOPER"] },
       ],
     },
     {
       title: "MANAGEMENT",
       links: [
-        { name: "Users", path: "/users", icon: "♙" },
-        { name: "Permissions", path: "/permissions", icon: "◉" },
+        { name: "Users", path: "/users", icon: "♙", roles: ["ADMIN"] },
+        { name: "Permissions", path: "/permissions", icon: "◉", roles: ["ADMIN"] },
       ],
     },
     {
       title: "MONITORING",
       links: [
-        { name: "Usage Logs", path: "/usage", icon: "▥" },
-        { name: "Audit Logs", path: "/audit", icon: "▤" },
+        { name: "Usage Logs", path: "/usage", icon: "▥", roles: ["ADMIN", "DEVELOPER", "USER"] },
+        { name: "Audit Logs", path: "/audit", icon: "▤", roles: ["ADMIN"] },
       ],
     },
   ];
@@ -47,7 +50,7 @@ function Sidebar() {
             </div>
 
             <div className="sidebar-links">
-              {section.links.map((link) => (
+              {section.links.filter((link) => !link.roles || link.roles.includes(user?.role)).map((link) => (
                 <NavLink
                   key={link.path}
                   to={link.path}

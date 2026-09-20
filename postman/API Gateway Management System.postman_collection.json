@@ -20,7 +20,35 @@
     },
     {
       "key": "api_key_id",
-      "value": "5"
+      "value": "1"
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "api_id",
+      "value": ""
+    },
+    {
+      "key": "version_id",
+      "value": ""
+    },
+    {
+      "key": "route_id",
+      "value": ""
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('No unexpected server error', function () { pm.expect(pm.response.code).to.be.below(500); });",
+          "pm.test('JSON response has success flag', function () { pm.expect(pm.response.json()).to.have.property('success'); });"
+        ]
+      }
     }
   ],
   "item": [
@@ -75,7 +103,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base_url}}/api/users",
+              "url": "{{base_url}}/api/users",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -136,7 +164,18 @@
                 }
               }
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('user_id', pm.response.json().user_id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Update User",
@@ -148,7 +187,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/api/users/5",
+            "url": "{{base_url}}/api/users/{{user_id}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -175,7 +214,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{base_url}}/api/users/5",
+            "url": "{{base_url}}/api/users/{{user_id}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -259,7 +298,18 @@
                 }
               }
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('api_id', pm.response.json().api_id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Update API",
@@ -271,7 +321,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/api/apis/5",
+            "url": "{{base_url}}/api/apis/{{api_id}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -298,7 +348,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{base_url}}/api/apis/5",
+            "url": "{{base_url}}/api/apis/{{api_id}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -357,14 +407,25 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"version_number\": \"v3\",\n  \"is_active\": true\n}",
+              "raw": "{\n  \"version_number\": \"v4\",\n  \"is_active\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('version_id', pm.response.json().version_id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Update Version",
@@ -376,7 +437,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/api/versions/9",
+            "url": "{{base_url}}/api/versions/{{version_id}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -389,7 +450,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"version_number\": \"v3.1\",\n  \"is_active\": true\n}",
+              "raw": "{\n  \"version_number\": \"v5\",\n  \"is_active\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -403,7 +464,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{base_url}}/api/versions/9",
+            "url": "{{base_url}}/api/versions/{{version_id}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -469,7 +530,18 @@
                 }
               }
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('route_id', pm.response.json().route_id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Update Route",
@@ -481,7 +553,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/api/routes/11",
+            "url": "{{base_url}}/api/routes/{{route_id}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -508,7 +580,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{base_url}}/api/routes/11",
+            "url": "{{base_url}}/api/routes/{{route_id}}",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -683,7 +755,19 @@
                 }
               }
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "pm.collectionVariables.set('api_key_id', response.key_id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Revoke API Key",
@@ -749,7 +833,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base_url}}/api/usage/me",
+            "url": "{{base_url}}/api/usage/my",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -772,7 +856,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base_url}}/api/audit-logs",
+            "url": "{{base_url}}/api/audit",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -790,7 +874,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base_url}}/api/audit-logs/user/2",
+            "url": "{{base_url}}/api/audit/user/2",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -813,7 +897,13 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base_url}}/api/gateway/hello"
+            "url": "{{base_url}}/api/gateway/apis/1/v1/users",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{api_key}}"
+              }
+            ]
           }
         },
         {
@@ -1095,7 +1185,20 @@
                 }
               }
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "pm.collectionVariables.set('api_key_id', response.key_id);",
+                  "pm.collectionVariables.set('api_key', response.api_key);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "GET Gateway - New API Key",
@@ -1121,7 +1224,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base_url}}/api/demo/users"
+            "url": "{{base_url}}/api/users"
           }
         },
         {
@@ -1134,7 +1237,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/api/demo/users",
+            "url": "{{base_url}}/api/users",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"demo@example.com\"\n}",

@@ -8,7 +8,8 @@ const logApiUsage = async ({
     routeId,
     keyId,
     statusCode,
-    responseTimeMs
+    responseTimeMs,
+    requestId
 }) => {
     try {
         await pool.query(
@@ -41,7 +42,7 @@ const logApiUsage = async ({
     } catch (error) {
         // Logging failure should not break the gateway request
         console.error(
-            "[UsageLog] Failed to save usage log:",
+            `[UsageLog] Request:${requestId || "unknown"} Failed to save usage log:`,
             error.message
         );
     }

@@ -16,12 +16,24 @@ const permissionRoutes = require("./routes/permissionRoutes");
 const apiKeyRoutes = require("./routes/apiKeyRoutes");
 const usageRoutes = require("./routes/usageRoutes");
 const auditRoutes = require("./routes/auditRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
 const gatewayRoutes = require("./routes/gatewayRoutes");
 const requestIdMiddleware = require("./middleware/requestIdMiddleware");
 
+if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET must be configured before starting the backend");
+}
+
 const app = express();
 
-app.use(cors());
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+app.use(cors({
+    origin: allowedOrigins
+}));
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
@@ -33,6 +45,7 @@ app.use("/api/permissions", permissionRoutes);
 app.use("/api/keys", apiKeyRoutes);
 app.use("/api/usage", usageRoutes);
 app.use("/api/audit", auditRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 
 app.use(

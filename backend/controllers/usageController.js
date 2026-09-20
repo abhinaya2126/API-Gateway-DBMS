@@ -10,7 +10,7 @@ const simulateApiRequest = async (req, res, next) => {
             route_id,
             key_id,
             status_code
-        } = req.body;
+        } = req.body || {};
 
         const user_id = req.user.user_id;
 
